@@ -1,0 +1,15 @@
+{
+    "name": "openstack-contrail",
+    "version": "1.0.0",
+    "summary": "Juju solutions for OpenStack with Contrail",
+    "excerpt": "Juju makes it easy to deploy OpenStack at scale. Quickly and reliably build an enterprise-scale cloud run on Ubuntu - the most popular operating system for OpenStack.",
+    "maintainer": "Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>",
+    "bundles": [{
+        "key": "openstack-base",
+        "name": "OpenStack Contrail",
+        "summary": "This bundle deploys a basic OpenStack Cloud (Mitaka release) on Ubuntu 16.04 LTS, configured to use OpenContrail, providing Dashboard, Compute, Network, Block Storage, Object Storage, Identity and Image services.",
+        "bundleSeries": "xenial",
+        "whitelist": ["maas", "lxd", "localhost"],
+        "location": "/usr/share/openstack-contrail/bundles/openstack-base/bundle.yaml"
+    }]
+}

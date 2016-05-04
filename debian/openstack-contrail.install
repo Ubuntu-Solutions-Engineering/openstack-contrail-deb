@@ -1,0 +1,4 @@
+bundles usr/share/openstack-contrail
+config.json usr/share/openstack-contrail
+metadata.json usr/share/openstack-contrail
+openstack-rsyslog.conf usr/share/openstack-contrail
