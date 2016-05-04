@@ -1,0 +1,121 @@
+series: trusty
+services:
+  # openstack
+  ubuntu:
+    num_units: 1
+    charm: cs:trusty/ubuntu
+  ntp:
+    charm: cs:trusty/ntp
+  mysql:
+    num_units: 1
+    charm: cs:trusty/mysql
+    options:
+      dataset-size: 15%
+      max-connections: 1000
+  rabbitmq-server:
+    num_units: 1
+    charm: cs:trusty/rabbitmq-server
+  keystone:
+    num_units: 1
+    charm: cs:trusty/keystone
+    options:
+      admin-password: password
+      admin-role: admin
+  nova-cloud-controller:
+    num_units: 1
+    charm: cs:trusty/nova-cloud-controller
+    options:
+      network-manager: Neutron
+  neutron-api:
+    num_units: 1
+    charm: cs:trusty/neutron-api
+    options:
+      manage-neutron-plugin-legacy-mode: false
+  glance:
+    num_units: 1
+    charm: cs:trusty/glance
+  openstack-dashboard:
+    num_units: 1
+    charm: cs:trusty/openstack-dashboard
+  nova-compute:
+    num_units: 1
+    charm: cs:trusty/nova-compute
+    options:
+      manage-neutron-plugin-legacy-mode: false
+
+  # contrail
+  cassandra:
+    num_units: 1
+    charm: cs:trusty/cassandra
+    options:
+      authenticator: AllowAllAuthenticator
+  zookeeper:
+    series: precise
+    num_units: 1
+    charm: cs:precise/zookeeper
+  contrail-configuration:
+    num_units: 1
+    charm: cs:~sdn-charmers/trusty/contrail-configuration
+  contrail-control:
+    num_units: 1
+    charm: cs:~sdn-charmers/trusty/contrail-control
+  contrail-analytics:
+    num_units: 1
+    charm: cs:~sdn-charmers/trusty/contrail-analytics
+  contrail-webui:
+    num_units: 1
+    charm: cs:~sdn-charmers/trusty/contrail-webui
+  neutron-api-contrail:
+    charm: cs:~sdn-charmers/trusty/neutron-api-contrail
+  neutron-contrail:
+    charm: cs:~sdn-charmers/trusty/neutron-contrail
+
+relations:
+  # openstack
+  - [ ubuntu, ntp ]
+  - [ keystone, mysql ]
+  - [ glance, mysql ]
+  - [ glance, keystone ]
+  - [ nova-cloud-controller, mysql ]
+  - [ nova-cloud-controller, rabbitmq-server ]
+  - [ nova-cloud-controller, keystone ]
+  - [ nova-cloud-controller, glance ]
+  - [ neutron-api, mysql ]
+  - [ neutron-api, rabbitmq-server ]
+  - [ neutron-api, nova-cloud-controller ]
+  - [ neutron-api, keystone ]
+  - [ neutron-api, neutron-api-contrail ]
+  - [ "nova-compute:shared-db", "mysql:shared-db" ]
+  - [ "nova-compute:amqp", "rabbitmq-server:amqp" ]
+  - [ nova-compute, glance ]
+  - [ nova-compute, nova-cloud-controller ]
+  - [ nova-compute, ntp ]
+  - [ openstack-dashboard, keystone ]
+
+  # contrail
+  - [ "contrail-configuration:cassandra", "cassandra:database" ]
+  - [ contrail-configuration, zookeeper ]
+  - [ contrail-configuration, rabbitmq-server ]
+  - [ contrail-configuration, keystone ]
+  - [ neutron-api-contrail, contrail-configuration ]
+  - [ neutron-api-contrail, keystone ]
+  - [ "contrail-control:contrail-api", "contrail-configuration:contrail-api" ]
+  - [ "contrail-control:contrail-discovery", "contrail-configuration:contrail-discovery" ]
+  - [ "contrail-control:contrail-ifmap", "contrail-configuration:contrail-ifmap" ]
+  - [ contrail-control, keystone ]
+  - [ "contrail-analytics:cassandra", "cassandra:database" ]
+  - [ contrail-analytics, zookeeper ]
+  - [ "contrail-analytics:contrail-api", "contrail-configuration:contrail-api" ]
+  - [ "contrail-analytics:contrail-discovery", "contrail-configuration:contrail-discovery" ]
+  - [ contrail-analytics, keystone ]
+  - [ "contrail-configuration:contrail-analytics-api", "contrail-analytics:contrail-analytics-api" ]
+  - [ nova-compute, neutron-contrail ]
+  - [ "neutron-contrail:contrail-discovery", "contrail-configuration:contrail-discovery" ]
+  - [ "neutron-contrail:contrail-api", "contrail-configuration:contrail-api" ]
+  - [ neutron-contrail, keystone ]
+  - [ contrail-webui, keystone ]
+  - [ "contrail-webui:contrail_api", "contrail-configuration:contrail-api" ]
+  - [ "contrail-webui:contrail_discovery", "contrail-configuration:contrail-discovery" ]
+  - [ "contrail-webui:cassandra", "cassandra:database" ]
+
+machines: {}
