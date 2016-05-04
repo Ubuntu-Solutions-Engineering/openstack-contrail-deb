@@ -1,6 +1,7 @@
 debian/openstack*debhelper*
 debian/openstack*substvars
 debian/openstack
-debian/*debhelper
+debian/*debhelper*
+debian/openstack-contrail
 debian/files
 debian/tmp
